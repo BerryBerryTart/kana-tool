@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "burger-menu": "^2.0.0",
+    "hamburger-react": "^2.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },

@@ -4,6 +4,12 @@ import { getRandomInt, shuffleArray } from './utils';
 import './App.css'
 import data from './data.json';
 
+import { SideMenu } from './SideMenu/SideMenu';
+
+const ALL_OPTION = "ALL";
+const HIRAGANA_OPTION = "h";
+const KATAKANA_OPTION = "k";
+
 function App() {
   const [masterCharList, setMasterCharList] = useState([]); //master list of alphabetical objects
   const [masterSylList, setMasterSylList] = useState([]); //head of syllables 
@@ -15,20 +21,20 @@ function App() {
   const [displayedChar, setDisplayedChar] = useState(null); //displayed character
   const [willAskForNext, setWillAskForNext] = useState(false); //next trigger
   const [answerMessage, setAnswerMessage] = useState(null); //response message
+  const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION);
 
+  //SET UP
   useEffect(() => {
     document.title = "Kana Tool :3"
 
     //Populate initial data
     let list = data.data;
-    let masterListBuffer = [];
+    // let masterListBuffer = [];
     let masterCharListBuffer = [];
-    let masterNameListBuffer = [];
-    let masterQueueBuffer = [];
-    
+    let masterNameListBuffer = [];    
 
     list.forEach((element) => {
-      masterListBuffer.push(element.syl);
+      // masterListBuffer.push(element.syl);
       let charList = element.chars;
       charList.forEach((item) => {
         if (item.h !== "" && item.k !== "") {
@@ -36,38 +42,71 @@ function App() {
           masterNameListBuffer.push(item.n);
         }
       });
-    })
-
-    masterCharListBuffer.forEach((element) => {
-      let obj = {name: "", char: ""}
-      obj.name = element.n;
-      obj.char = element.h;
-
-      masterQueueBuffer.push(obj);
-
-      let obj2 = {name: "", char: ""}
-      obj2.name = element.n;
-      obj2.char = element.k;
-
-      masterQueueBuffer.push(obj2);
     });
 
-    //SCRAMBLES IT
-    shuffleArray(masterQueueBuffer);
-
     setMasterCharList(masterCharListBuffer);
-    setMasterSylList(masterListBuffer);    
+    // setMasterSylList(masterListBuffer)
     setMasterNameList(masterNameListBuffer);
-    setMasterQueue(masterQueueBuffer);
   }, []);
 
   useEffect(() => {
-    //Set up initial character and options
+    //Set up initial character and options once loaded
     if (masterCharList.length !== 0) {
       getNewCharacter();
     }
 
-  }, [masterCharList]);
+  }, [masterQueue]);
+
+  const getAllChars = () => {
+    let newList = [];
+
+    masterCharList.forEach((element) => {
+      let obj = {name: "", char: ""}
+      obj.name = element.n;
+      obj.char = element[HIRAGANA_OPTION];  
+      newList.push(obj);
+
+      let obj2 = {name: "", char: ""}
+      obj2.name = element.n;
+      obj2.char = element[KATAKANA_OPTION];  
+      newList.push(obj2);
+    });
+
+    return newList;
+  }
+
+  const getHiraganaOrKatakana = (option) => {
+    let newList = [];
+
+    masterCharList.forEach((element) => {
+      let obj = {name: "", char: ""}
+      obj.name = element.n;
+      obj.char = element[option];  
+      newList.push(obj);
+    });
+
+    return newList;
+  }
+
+  useEffect(() => {
+    let newList = [];    
+    switch(letterSetFilter) {
+      case ALL_OPTION:
+        newList = getAllChars();
+        break;
+      case HIRAGANA_OPTION:
+        newList = getHiraganaOrKatakana(HIRAGANA_OPTION);
+        break;
+      case KATAKANA_OPTION:
+        newList =getHiraganaOrKatakana(KATAKANA_OPTION);
+        break;
+      default:
+        newList = getAllChars();
+    }
+    shuffleArray(newList);
+    setMasterQueue(newList);
+    setCurrIndex(0);
+  }, [letterSetFilter, masterCharList])
 
   const getNewCharacter = () => {
     let tmpChar;
@@ -82,15 +121,16 @@ function App() {
       setMasterQueue(tmpArray);      
     } else {
       tmpChar = masterQueue[currIndex];
-      setCurrIndex(currIndex + 1);
     }
 
-    let tmpOptions = getOptions(tmpChar.name);    
+    if (tmpChar && tmpChar.name){
+      let tmpOptions = getOptions(tmpChar.name);    
 
-    //Dump buffer
-    setCurrChar(tmpChar);
-    setCurrOptions(tmpOptions);
-    setDisplayedChar(tmpChar.char);    
+      //Dump buffer
+      setCurrChar(tmpChar);
+      setCurrOptions(tmpOptions);
+      setDisplayedChar(tmpChar.char);
+    }
   };
 
   const getOptions = (currCharBuff) => {
@@ -117,11 +157,11 @@ function App() {
     if (willAskForNext === false) {
       let buttons = [];
       for (let [i, v] of currOptions.entries()) {
-        buttons.push(<button key={i} onClick={() => checkAnswer(v)} >{v}</button>);
+        buttons.push(<button className="btn-option" key={i} onClick={() => checkAnswer(v)} >{v}</button>);
       }
       return buttons;
     } else {
-      return <button onClick={() => handleNext()}>Next</button>
+      return <button className="btn-option" onClick={() => handleNext()}>Next</button>
     }
   }
 
@@ -132,6 +172,7 @@ function App() {
     } else {
       setAnswerMessage("Sorry, the right answer was: " + currChar.name);
     }
+    setCurrIndex(e => e + 1);
   }
 
   const handleNext = () => {
@@ -140,8 +181,70 @@ function App() {
     getNewCharacter();
   }
 
+  const applySetFilter = (e) => {
+    let option = e.target.value;
+    switch(option) {
+      case ALL_OPTION:
+        setLetterSetFilter(ALL_OPTION);
+        break;
+      case HIRAGANA_OPTION:
+        setLetterSetFilter(HIRAGANA_OPTION);
+        break;
+      case KATAKANA_OPTION:
+        setLetterSetFilter(KATAKANA_OPTION);
+        break;
+      default:
+        setLetterSetFilter(ALL_OPTION);
+    }
+  }
+
+  const getFilterButtons = () => {
+    let buttons = [
+      <div key={ALL_OPTION}>
+        <input 
+          type="radio" 
+          name="letter-set" 
+          id="ALL"
+          className="radio-btn"
+          value={ALL_OPTION}
+          checked={letterSetFilter === ALL_OPTION}
+          onChange={applySetFilter}
+        />
+        <label htmlFor="ALL" className="radio-btn-label">ALL</label>
+      </div>,
+      <div key={HIRAGANA_OPTION}>
+        <input 
+          type="radio" 
+          name="letter-set" 
+          id="HIRAGANA"
+          className="radio-btn"
+          value={HIRAGANA_OPTION}
+          checked={letterSetFilter === HIRAGANA_OPTION}
+          onChange={applySetFilter}
+        />
+        <label htmlFor="HIRAGANA" className="radio-btn-label">HIRAGANA</label>
+      </div>,
+      <div key={KATAKANA_OPTION}>
+        <input 
+          type="radio" 
+          name="letter-set" 
+          id="KATAKANA"
+          className="radio-btn"
+          value={KATAKANA_OPTION}
+          checked={letterSetFilter === KATAKANA_OPTION}
+          onChange={applySetFilter}
+        />
+        <label htmlFor="KATAKANA" className="radio-btn-label">KATAKANA</label>
+      </div>
+    ]
+    return buttons;
+  }
+
   return (
     <div className="App">
+      <SideMenu 
+        letterSetOptions={getFilterButtons()}
+      />
       <div id="card">
         <p id="char">{currChar && displayedChar}</p>
       </div>

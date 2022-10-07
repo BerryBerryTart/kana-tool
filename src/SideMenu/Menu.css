@@ -1,0 +1,27 @@
+#hamburger-menu{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+}
+
+.menu-wrap.burger-menu, 
+.bm-item, 
+.sub-item, 
+.menu,
+.sub-menu{
+  background-color: rgb(25, 25, 25);
+}
+
+.overlay.burger-overlay {
+  
+  background: rgba(0,0,0, 0.8) !important;
+}
+
+.menu {
+  margin-top: 25px;
+}
+
+.bm-item:hover{
+  background-color: rgb(35, 35, 35);
+}
