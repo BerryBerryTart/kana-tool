@@ -1,3 +1,21 @@
+:root {
+  --overlay-color: rgba(0,0,0, 0.8);
+  --burger-menu-main-color: rgb(25, 25, 25);
+  --menu-break-color: rgb(55, 55, 55);
+  --menu-option-bg-color-checked:rgb(55, 55, 55);
+  --menu-option-border-color-checked: rgb(155, 155, 155);
+  --menu-option-border-color-unchecked: rgb(68, 68, 68);
+}
+
+[data-theme='light'] {
+  --overlay-color: rgba(200, 200, 200, 0.8);
+  --burger-menu-main-color: rgb(235, 235, 235);
+  --menu-break-color: rgb(155, 155, 155);
+  --menu-option-bg-color-checked:rgb(190, 190, 190);
+  --menu-option-border-color-checked: rgb(126, 126, 126);
+  --menu-option-border-color-unchecked: rgb(200, 200, 200);
+}
+
 #hamburger-menu{
   position: fixed;
   top: 0px;
@@ -10,26 +28,48 @@
 .sub-item, 
 .menu,
 .sub-menu{
-  background-color: rgb(25, 25, 25);
+  background-color: var(--burger-menu-main-color);
+  color: var(--text-color);
 }
 
 .overlay.burger-overlay {
   backdrop-filter: blur(10px);
-  background: rgba(0,0,0, 0.8) !important;
+  background: var(--overlay-color) !important;
 }
 
 .menu {
   margin-top: 15px;
 }
 
-.bm-item:hover{
-  background-color: rgb(35, 35, 35);
-}
 
 .menu-break {
-  background-color: rgb(55, 55, 55);
+  background-color: var(--menu-break-color);
   width: 100%;
   height: 2px;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+/* RADIO BUTTON STYLES */
+
+.burger-menu input[type="radio"], .burger-menu input[type="checkbox"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-btn:checked + .radio-btn-label {
+  background-color:var(--menu-option-bg-color-checked);
+  border-color: var(--menu-option-border-color-checked);
+}
+
+.radio-btn-label {
+  display: inline-block;
+  padding: 10px;
+  font-family: sans-serif, Arial;
+  font-size: 18px;
+  border: 2px solid var(--menu-option-border-color-unchecked);
+  border-radius: 4px;
+  width: 90%;
+  margin: 5px;
 }

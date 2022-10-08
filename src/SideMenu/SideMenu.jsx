@@ -30,6 +30,9 @@ export const SideMenu = (props) => {
         <div className="menu-break" />
         <p>Dakuten / Handakuten</p>
         {props.dotsOption}
+        <div className="menu-break" />
+        <p>Theme</p>
+        {props.themeOption}
       </Menu>
     </>
 
