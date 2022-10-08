@@ -25,9 +25,11 @@ export const SideMenu = (props) => {
         customCrossIcon={true}
         overlayClassName={"burger-overlay"}
       >
-        <SubMenu title="Filter By Kana Set">
-          {props.letterSetOptions}
-        </SubMenu>
+        <p>Filter By Kana Set</p>
+        {props.letterSetOptions}
+        <div className="menu-break" />
+        <p>Dakuten / Handakuten</p>
+        {props.dotsOption}
       </Menu>
     </>
 

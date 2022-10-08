@@ -3,6 +3,7 @@ import { getRandomInt, shuffleArray } from './utils';
 
 import './App.css'
 import data from './data.json';
+import dots from './dots.json';
 
 import { SideMenu } from './SideMenu/SideMenu';
 
@@ -12,16 +13,19 @@ const KATAKANA_OPTION = "k";
 
 function App() {
   const [masterCharList, setMasterCharList] = useState([]); //master list of alphabetical objects
-  const [masterSylList, setMasterSylList] = useState([]); //head of syllables 
+  const [masterDotsList, setMasterDotsList] = useState([]); //master list of all dakuten and handakuten
   const [masterQueue, setMasterQueue] = useState([]); //shuffled list to iterate over
   const [currIndex, setCurrIndex] = useState(0); //keeps track of where the list is
   const [masterNameList, setMasterNameList] = useState([]); //english names of syllables
+  const [masterDotsNameList, setMasterDotsNameList] = useState([]); //english names of dakuten / handakuten syllables
+  const [currentNamesList, setCurrentNamesList] = useState([]);
   const [currOptions, setCurrOptions] = useState([]); //current options to pick
   const [currChar, setCurrChar] = useState(null); //current character
   const [displayedChar, setDisplayedChar] = useState(null); //displayed character
   const [willAskForNext, setWillAskForNext] = useState(false); //next trigger
   const [answerMessage, setAnswerMessage] = useState(null); //response message
-  const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION);
+  const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION); //filter options
+  const [dotsToggle, setDotsToggle] = useState(false);
 
   //SET UP
   useEffect(() => {
@@ -29,12 +33,15 @@ function App() {
 
     //Populate initial data
     let list = data.data;
-    // let masterListBuffer = [];
+    let dotsList = dots.data;
+
     let masterCharListBuffer = [];
-    let masterNameListBuffer = [];    
+    let masterNameListBuffer = []; 
+
+    let masterDotsListBuffer = [];
+    let masterDotsNameListBuffer = [];
 
     list.forEach((element) => {
-      // masterListBuffer.push(element.syl);
       let charList = element.chars;
       charList.forEach((item) => {
         if (item.h !== "" && item.k !== "") {
@@ -44,9 +51,21 @@ function App() {
       });
     });
 
+    dotsList.forEach((element) => {
+      let charList = element.chars;
+      charList.forEach((item) => {
+        if (item.h !== "" && item.k !== "") {
+          masterDotsListBuffer.push(item);
+          masterDotsNameListBuffer.push(item.n);
+        }
+      });
+    });
+
     setMasterCharList(masterCharListBuffer);
-    // setMasterSylList(masterListBuffer)
     setMasterNameList(masterNameListBuffer);
+
+    setMasterDotsList(masterDotsListBuffer);
+    setMasterDotsNameList(masterDotsNameListBuffer);
   }, []);
 
   useEffect(() => {
@@ -72,6 +91,20 @@ function App() {
       newList.push(obj2);
     });
 
+    if (dotsToggle){
+      masterDotsList.forEach((element) => {
+        let obj = {name: "", char: ""}
+        obj.name = element.n;
+        obj.char = element[HIRAGANA_OPTION];  
+        newList.push(obj);
+  
+        let obj2 = {name: "", char: ""}
+        obj2.name = element.n;
+        obj2.char = element[KATAKANA_OPTION];  
+        newList.push(obj2);
+      });
+    }
+
     return newList;
   }
 
@@ -84,6 +117,15 @@ function App() {
       obj.char = element[option];  
       newList.push(obj);
     });
+
+    if (dotsToggle){
+      masterDotsList.forEach((element) => {
+        let obj = {name: "", char: ""}
+        obj.name = element.n;
+        obj.char = element[option];
+        newList.push(obj);
+      });
+    }
 
     return newList;
   }
@@ -103,10 +145,14 @@ function App() {
       default:
         newList = getAllChars();
     }
+
+    let currentNamesBuffer = dotsToggle ? masterNameList.concat(masterDotsNameList) : masterNameList;
+    setCurrentNamesList(currentNamesBuffer);    
+
     shuffleArray(newList);
     setMasterQueue(newList);
     setCurrIndex(0);
-  }, [letterSetFilter, masterCharList])
+  }, [letterSetFilter, masterCharList, dotsToggle])
 
   const getNewCharacter = () => {
     let tmpChar;
@@ -139,9 +185,9 @@ function App() {
     currOptionsBuffer.push(currCharBuff);    
 
     while (currOptionsBuffer.length < 3) {
-      let index = getRandomInt(masterNameList.length)
+      let index = getRandomInt(currentNamesList.length)
 
-      let sylb = masterNameList[index];
+      let sylb = currentNamesList[index];
 
       if (currOptionsBuffer.includes(sylb) === false) {
         currOptionsBuffer.push(sylb);
@@ -198,6 +244,10 @@ function App() {
     }
   }
 
+  const handleDotsToggle = () => {
+    setDotsToggle(e => !e);
+  }
+
   const getFilterButtons = () => {
     let buttons = [
       <div key={ALL_OPTION}>
@@ -240,10 +290,28 @@ function App() {
     return buttons;
   }
 
+  const getDotsToggle = () => {
+    let title = dotsToggle ? "Enabled" : "Disabled";
+    return (
+      <div>
+        <input 
+          type="checkbox" 
+          name="dots" 
+          id="dots" 
+          checked={dotsToggle}
+          onChange={handleDotsToggle}
+          className="radio-btn"
+        />
+        <label htmlFor="dots" className="radio-btn-label">{title}</label>
+      </div>
+    )
+  }
+
   return (
     <div className="App">
       <SideMenu 
         letterSetOptions={getFilterButtons()}
+        dotsOption={getDotsToggle()}
       />
       <div id="card">
         <p id="char">{currChar && displayedChar}</p>
