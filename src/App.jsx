@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getRandomInt, shuffleArray } from './utils';
+import useLocalStorage from 'use-local-storage';
 
-import './App.css'
+import './App.css';
 import data from './data.json';
 import dots from './dots.json';
 
@@ -26,6 +27,15 @@ function App() {
   const [answerMessage, setAnswerMessage] = useState(null); //response message
   const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION); //filter options
   const [dotsToggle, setDotsToggle] = useState(false);
+
+  //THEMING STUFF
+  const defaultLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  const [theme, setTheme] = useLocalStorage('theme', defaultLight ? 'light' : 'dark');
+
+  const switchTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  }
 
   //SET UP
   useEffect(() => {
@@ -307,11 +317,30 @@ function App() {
     )
   }
 
+  const getThemeSwitchButton = () => {
+    let title = theme === 'dark' ? "DARK MODE" : "LIGHT MODE";
+
+    return (
+      <div>
+        <input 
+          type="checkbox" 
+          name="theme" 
+          id="theme" 
+          checked={theme === 'light'}
+          onChange={switchTheme}
+          className="radio-btn"
+        />
+        <label htmlFor="theme" className="radio-btn-label">{title}</label>
+      </div>
+    )
+  }
+
   return (
-    <div className="App">
+    <div className="App" data-theme={theme}>
       <SideMenu 
         letterSetOptions={getFilterButtons()}
         dotsOption={getDotsToggle()}
+        themeOption={getThemeSwitchButton()}
       />
       <div id="card">
         <p id="char">{currChar && displayedChar}</p>
