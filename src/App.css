@@ -5,7 +5,7 @@
   --option-button-bg-color: rgb(100, 100, 100);
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --background: white;
   --text-color: rgb(26, 26, 26);
   --card-bg-color: rgb(230, 230, 230);
@@ -29,7 +29,7 @@
   line-height: calc(100px + 20vmax);
 }
 
-#card {  
+#card {
   margin-bottom: 10px;
   background-color: var(--card-bg-color);
   min-width: 200px;
@@ -45,6 +45,6 @@
   border: none;
 }
 
-#message{
+#message {
   font-size: calc(10px + 1.5vmax);
 }

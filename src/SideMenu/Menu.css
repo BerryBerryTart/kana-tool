@@ -1,33 +1,33 @@
 :root {
-  --overlay-color: rgba(0,0,0, 0.8);
+  --overlay-color: rgba(0, 0, 0, 0.8);
   --burger-menu-main-color: rgb(25, 25, 25);
   --menu-break-color: rgb(55, 55, 55);
-  --menu-option-bg-color-checked:rgb(55, 55, 55);
+  --menu-option-bg-color-checked: rgb(55, 55, 55);
   --menu-option-border-color-checked: rgb(155, 155, 155);
   --menu-option-border-color-unchecked: rgb(68, 68, 68);
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --overlay-color: rgba(200, 200, 200, 0.8);
   --burger-menu-main-color: rgb(235, 235, 235);
   --menu-break-color: rgb(155, 155, 155);
-  --menu-option-bg-color-checked:rgb(190, 190, 190);
+  --menu-option-bg-color-checked: rgb(190, 190, 190);
   --menu-option-border-color-checked: rgb(126, 126, 126);
   --menu-option-border-color-unchecked: rgb(200, 200, 200);
 }
 
-#hamburger-menu{
+#hamburger-menu {
   position: fixed;
   top: 0px;
   left: 0px;
   z-index: 9999;
 }
 
-.menu-wrap.burger-menu, 
-.bm-item, 
-.sub-item, 
+.menu-wrap.burger-menu,
+.bm-item,
+.sub-item,
 .menu,
-.sub-menu{
+.sub-menu {
   background-color: var(--burger-menu-main-color);
   color: var(--text-color);
 }
@@ -41,7 +41,6 @@
   margin-top: 15px;
 }
 
-
 .menu-break {
   background-color: var(--menu-break-color);
   width: 100%;
@@ -52,14 +51,15 @@
 
 /* RADIO BUTTON STYLES */
 
-.burger-menu input[type="radio"], .burger-menu input[type="checkbox"] {
+.burger-menu input[type="radio"],
+.burger-menu input[type="checkbox"] {
   opacity: 0;
   position: fixed;
   width: 0;
 }
 
 .radio-btn:checked + .radio-btn-label {
-  background-color:var(--menu-option-bg-color-checked);
+  background-color: var(--menu-option-bg-color-checked);
   border-color: var(--menu-option-border-color-checked);
 }
 
