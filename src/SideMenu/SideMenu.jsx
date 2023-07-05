@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 import { Menu } from "burger-menu";
-import Hamburger from 'hamburger-react'
+import Hamburger from "hamburger-react";
 
-import 'burger-menu/lib/index.css';
-import './Menu.css';
+import "burger-menu/lib/index.css";
+import "./Menu.css";
 
 export const SideMenu = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,10 +12,7 @@ export const SideMenu = (props) => {
   return (
     <>
       <div id="hamburger-menu">
-        <Hamburger
-          onToggle={() => setIsOpen(!isOpen)}
-          toggled={isOpen}
-        />
+        <Hamburger onToggle={() => setIsOpen(!isOpen)} toggled={isOpen} />
       </div>
       <Menu
         className="burger-menu"
@@ -35,6 +32,5 @@ export const SideMenu = (props) => {
         {props.themeOption}
       </Menu>
     </>
-
   );
-}
+};
