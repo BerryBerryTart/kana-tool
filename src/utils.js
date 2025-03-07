@@ -8,3 +8,7 @@ export function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+export const ALL_OPTION = "ALL";
+export const HIRAGANA_OPTION = "h";
+export const KATAKANA_OPTION = "k";

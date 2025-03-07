@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { getRandomInt, shuffleArray } from "./utils";
 import useLocalStorage from "use-local-storage";
+import { ALL_OPTION, KATAKANA_OPTION, HIRAGANA_OPTION } from "./utils";
 
 import "./App.css";
 import data from "./data.json";
 import dots from "./dots.json";
 
 import { SideMenu } from "./SideMenu/SideMenu";
-
-const ALL_OPTION = "ALL";
-const HIRAGANA_OPTION = "h";
-const KATAKANA_OPTION = "k";
 
 function App() {
   const [masterCharList, setMasterCharList] = useState([]); //master list of alphabetical objects
@@ -27,14 +24,15 @@ function App() {
   const [answerMessage, setAnswerMessage] = useState(null); //response message
   const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION); //filter options
   const [dotsToggle, setDotsToggle] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   //THEMING STUFF
   const defaultLight = window.matchMedia(
-    "(prefers-color-scheme: light)"
+    "(prefers-color-scheme: light)",
   ).matches;
   const [theme, setTheme] = useLocalStorage(
     "theme",
-    defaultLight ? "light" : "dark"
+    defaultLight ? "light" : "dark",
   );
 
   const switchTheme = () => {
@@ -44,8 +42,6 @@ function App() {
 
   //SET UP
   useEffect(() => {
-    document.title = "Kana Tool :3";
-
     //Populate initial data
     let list = data.data;
     let dotsList = dots.data;
@@ -222,7 +218,7 @@ function App() {
         buttons.push(
           <button className="btn-option" key={i} onClick={() => checkAnswer(v)}>
             {v}
-          </button>
+          </button>,
         );
       }
       return buttons;
@@ -239,8 +235,10 @@ function App() {
     setWillAskForNext(true);
     if (char == currChar.name) {
       setAnswerMessage("Correct!");
+      setStreak((prev) => prev + 1);
     } else {
-      setAnswerMessage("Sorry, the right answer was: " + currChar.name);
+      setAnswerMessage("The right answer was: " + currChar.name);
+      setStreak(0);
     }
     setCurrIndex((e) => e + 1);
   };
@@ -272,104 +270,23 @@ function App() {
     setDotsToggle((e) => !e);
   };
 
-  const getFilterButtons = () => {
-    let buttons = [
-      <div key={ALL_OPTION}>
-        <input
-          type="radio"
-          name="letter-set"
-          id="ALL"
-          className="radio-btn"
-          value={ALL_OPTION}
-          checked={letterSetFilter === ALL_OPTION}
-          onChange={applySetFilter}
-        />
-        <label htmlFor="ALL" className="radio-btn-label">
-          ALL
-        </label>
-      </div>,
-      <div key={HIRAGANA_OPTION}>
-        <input
-          type="radio"
-          name="letter-set"
-          id="HIRAGANA"
-          className="radio-btn"
-          value={HIRAGANA_OPTION}
-          checked={letterSetFilter === HIRAGANA_OPTION}
-          onChange={applySetFilter}
-        />
-        <label htmlFor="HIRAGANA" className="radio-btn-label">
-          HIRAGANA
-        </label>
-      </div>,
-      <div key={KATAKANA_OPTION}>
-        <input
-          type="radio"
-          name="letter-set"
-          id="KATAKANA"
-          className="radio-btn"
-          value={KATAKANA_OPTION}
-          checked={letterSetFilter === KATAKANA_OPTION}
-          onChange={applySetFilter}
-        />
-        <label htmlFor="KATAKANA" className="radio-btn-label">
-          KATAKANA
-        </label>
-      </div>,
-    ];
-    return buttons;
-  };
-
-  const getDotsToggle = () => {
-    let title = dotsToggle ? "Enabled" : "Disabled";
-    return (
-      <div>
-        <input
-          type="checkbox"
-          name="dots"
-          id="dots"
-          checked={dotsToggle}
-          onChange={handleDotsToggle}
-          className="radio-btn"
-        />
-        <label htmlFor="dots" className="radio-btn-label">
-          {title}
-        </label>
-      </div>
-    );
-  };
-
-  const getThemeSwitchButton = () => {
-    let title = theme === "dark" ? "DARK MODE" : "LIGHT MODE";
-
-    return (
-      <div>
-        <input
-          type="checkbox"
-          name="theme"
-          id="theme"
-          checked={theme === "light"}
-          onChange={switchTheme}
-          className="radio-btn"
-        />
-        <label htmlFor="theme" className="radio-btn-label">
-          {title}
-        </label>
-      </div>
-    );
-  };
-
   return (
     <div className="App" data-theme={theme}>
       <SideMenu
-        letterSetOptions={getFilterButtons()}
-        dotsOption={getDotsToggle()}
-        themeOption={getThemeSwitchButton()}
+        letterSetFilter={letterSetFilter}
+        applySetFilter={applySetFilter}
+        handleDotsToggle={handleDotsToggle}
+        dotsToggle={dotsToggle}
+        theme={theme}
+        switchTheme={switchTheme}
       />
       <div id="card">
         <p id="char">{currChar && displayedChar}</p>
       </div>
       <div id="buttons">{getButtons()}</div>
+      {streak >= 0 && (
+        <div id="message">🔥 Correct Answer Streak: {streak} 🔥</div>
+      )}
       {answerMessage && (
         <div id="answer-check">
           <p id="message">{answerMessage}</p>
