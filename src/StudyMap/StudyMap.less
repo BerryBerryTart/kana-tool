@@ -1,0 +1,79 @@
+:root {
+  --vignette-bg: black;
+}
+
+[data-theme="light"] {
+  --vignette-bg: white;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#studymap {
+  animation: fade-in 0.5s;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  .vignette {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+    background-color: var(--vignette-bg);
+  }
+  #letterFlex {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    #letterContainer {
+      position: fixed;
+      display: grid;
+      grid-template-columns: repeat(11, auto);
+    }
+    @media screen and (min-width: 990px) {
+      #letterContainer {
+        grid-template-columns: repeat(11, auto);
+      }
+    }
+    @media screen and (max-width: 990px) {
+      #letterContainer {
+        grid-template-columns: repeat(6, auto);
+        grid-template-rows: repeat(2, auto);
+        row-gap: 20px;
+      }
+    }
+    @media screen and (max-width: 540px) {
+      #letterContainer {
+        grid-template-columns: repeat(1, auto);
+        row-gap: 10px;
+        .letterRow {
+          display: flex;
+          flex-direction: row;
+          .letterBox {
+            width: 80px;
+            height: 50px;
+          }
+        }
+      }
+    }
+  }
+  .letterBox {
+    width: 90px;
+    height: 50px;
+  }
+  .char {
+    font-size: 24px;
+  }
+  .name {
+    font-size: 14px;
+  }
+}

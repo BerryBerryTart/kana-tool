@@ -3,7 +3,7 @@
   --text-color: rgb(226, 226, 226);
   --card-bg-color: rgb(53, 53, 53);
   --option-button-bg-color: rgb(100, 100, 100);
-  --font-size: 500px;
+  --font-size: 400px;
 }
 
 [data-theme="light"] {
@@ -13,10 +13,20 @@
   --option-button-bg-color: rgb(200, 200, 200);
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 400px) {
   :root {
     --font-size: 100vw;
   }
+}
+
+@media screen and (max-height: 760px) {
+  :root {
+    --font-size: 50vh;
+  }
+}
+
+body {
+  background-color: var(--background);
 }
 
 .App {
@@ -26,14 +36,15 @@
   flex-direction: column;
   align-items: center;
   background-color: var(--background);
-  height: calc(100vh - 40px);
   color: var(--text-color);
+  height: calc(100vh - 40px);
 }
 
 #char {
   font-size: var(--font-size);
   margin: 0px;
   line-height: var(--font-size);
+  padding-bottom: 10px;
 }
 
 #card {
@@ -43,15 +54,29 @@
 }
 
 .btn-option {
-  font-size: calc(10px + 5vmax);
+  cursor: pointer;
+  font-size: min(100px, calc(10px + 5vmax));
   margin: 10px;
   padding-left: 2vw;
   padding-right: 2vw;
   background-color: var(--option-button-bg-color);
   color: var(--text-color);
   border: none;
+  padding-bottom: 10px;
 }
 
 #message {
-  font-size: calc(10px + 1.5vmax);
+  font-size: min(45px, calc(10px + 1.5vmax));
+}
+
+.study-icon {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.study-icon-light {
+  filter: invert(100%);
 }

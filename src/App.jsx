@@ -6,8 +6,11 @@ import { ALL_OPTION, KATAKANA_OPTION, HIRAGANA_OPTION } from "./utils";
 import "./App.css";
 import data from "./data.json";
 import dots from "./dots.json";
+import BOOK_ICON from "./book.svg";
+import EXIT_ICON from "./exit.svg";
 
 import { SideMenu } from "./SideMenu/SideMenu";
+import { StudyMap } from "./StudyMap/StudyMap";
 
 function App() {
   const [masterCharList, setMasterCharList] = useState([]); //master list of alphabetical objects
@@ -25,6 +28,7 @@ function App() {
   const [letterSetFilter, setLetterSetFilter] = useState(ALL_OPTION); //filter options
   const [dotsToggle, setDotsToggle] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [studyMapView, setStudyMapView] = useState(false);
 
   //THEMING STUFF
   const defaultLight = window.matchMedia(
@@ -272,6 +276,12 @@ function App() {
 
   return (
     <div className="App" data-theme={theme}>
+      {studyMapView && <StudyMap letterDict={data.data} />}
+      <img
+        className={theme === "dark" ? "study-icon" : "study-icon study-icon-light"}
+        src={studyMapView ? EXIT_ICON : BOOK_ICON}
+        onClick={() => setStudyMapView(!studyMapView)}
+      />
       <SideMenu
         letterSetFilter={letterSetFilter}
         applySetFilter={applySetFilter}
@@ -284,7 +294,7 @@ function App() {
         <p id="char">{currChar && displayedChar}</p>
       </div>
       <div id="buttons">{getButtons()}</div>
-      {streak >= 0 && (
+      {streak >= 2 && (
         <div id="message">🔥 Correct Answer Streak: {streak} 🔥</div>
       )}
       {answerMessage && (
